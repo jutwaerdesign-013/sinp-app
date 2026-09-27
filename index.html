@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>S.in.P. — Spacebeavers in Paradise</title>
+<link rel="stylesheet" href="css/app.css" />
+</head>
+<body>
+
+<div id="app" class="app-shell">
+  <!-- ===================== SCREEN: LOADING ===================== -->
+  <section class="screen" id="screen-loading" data-screen>
+    <div class="loading-wrap">
+      <div class="beaver-spinner" aria-hidden="true">🦫</div>
+      <p>Even bouwen aan de dam...</p>
+    </div>
+  </section>
+
+  <!-- ===================== SCREEN: LOGIN (email) ===================== -->
+  <section class="screen" id="screen-login" data-screen hidden>
+    <div class="screen-inner">
+      <header class="brand-header">
+        <div class="brand-emoji">🦫💛</div>
+        <h1>S.in.P.</h1>
+        <p class="subtitle">Spacebeavers in Paradise</p>
+      </header>
+
+      <form id="form-login" class="stack" autocomplete="off">
+        <label class="field">
+          <span>Jouw e-mailadres</span>
+          <input type="email" id="input-email" name="email" placeholder="jij@voorbeeld.nl" required inputmode="email" autocomplete="email" />
+        </label>
+        <button type="submit" class="btn btn-primary">Stuur inlogcode</button>
+        <p class="hint">Je krijgt een code van 6 cijfers per e-mail. Geen wachtwoord nodig.</p>
+      </form>
+      <p class="error" id="login-error" hidden></p>
+    </div>
+  </section>
+
+  <!-- ===================== SCREEN: OTP CODE ===================== -->
+  <section class="screen" id="screen-otp" data-screen hidden>
+    <div class="screen-inner">
+      <header class="brand-header brand-header--compact">
+        <div class="brand-emoji">🔐</div>
+        <h1>Check je mail</h1>
+        <p class="subtitle" id="otp-target-email">We stuurden een code naar jouw mail</p>
+      </header>
+
+      <form id="form-otp" class="stack" autocomplete="off">
+        <label class="field">
+          <span>Voer de 6-cijferige code in</span>
+          <input type="text" id="input-otp" name="otp" inputmode="numeric" pattern="[0-9]*" maxlength="6" placeholder="123456" required autocomplete="one-time-code" />
+        </label>
+        <button type="submit" class="btn btn-primary">Inloggen</button>
+        <button type="button" class="btn btn-link" id="btn-back-to-login">Ander e-mailadres gebruiken</button>
+      </form>
+      <p class="error" id="otp-error" hidden></p>
+    </div>
+  </section>
+
+  <!-- ===================== SCREEN: PROFILE SETUP ===================== -->
+  <section class="screen" id="screen-profile-setup" data-screen hidden>
+    <div class="screen-inner">
+      <header class="brand-header brand-header--compact">
+        <div class="brand-emoji">🦫</div>
+        <h1>Wie ben jij?</h1>
+        <p class="subtitle">Zo weten we hoe we je noemen</p>
+      </header>
+      <form id="form-profile" class="stack">
+        <label class="field">
+          <span>Jouw naam</span>
+          <input type="text" id="input-display-name" name="display_name" placeholder="Kim of Selwyn" required />
+        </label>
+        <button type="submit" class="btn btn-primary">Verder</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- ===================== SCREEN: PARTNER LINK ===================== -->
+  <section class="screen" id="screen-partner" data-screen hidden>
+    <div class="screen-inner">
+      <header class="brand-header brand-header--compact">
+        <div class="brand-emoji">🦫🤝🦫</div>
+        <h1>Koppel jullie twee</h1>
+        <p class="subtitle">Maak een nieuwe uitnodiging, of vul een code in die je kreeg</p>
+      </header>
+
+      <div class="tabbar" role="tablist">
+        <button class="tab active" data-tab="create" role="tab" aria-selected="true">Nieuwe uitnodiging</button>
+        <button class="tab" data-tab="join" role="tab" aria-selected="false">Code invullen</button>
+      </div>
+
+      <div class="tab-panel" data-tab-panel="create">
+        <p class="body-text">Maak een uitnodigingscode en deel die met je partner (bijvoorbeeld via WhatsApp).</p>
+        <button class="btn btn-primary" id="btn-create-invite">Maak uitnodigingscode</button>
+        <div class="invite-code-box" id="invite-code-box" hidden>
+          <span class="invite-code" id="invite-code-value">------</span>
+          <button class="btn btn-secondary" id="btn-copy-invite">Kopieer code</button>
+        </div>
+        <p class="hint" id="invite-waiting-hint" hidden>Wachten tot je partner de code invult...</p>
+      </div>
+
+      <div class="tab-panel" data-tab-panel="join" hidden>
+        <p class="body-text">Heb je een code gekregen van je partner? Vul hem hieronder in.</p>
+        <form id="form-join-invite" class="stack">
+          <label class="field">
+            <span>Uitnodigingscode</span>
+            <input type="text" id="input-invite-code" placeholder="abc123" required />
+          </label>
+          <button type="submit" class="btn btn-primary">Koppelen</button>
+        </form>
+      </div>
+      <p class="error" id="partner-error" hidden></p>
+    </div>
+  </section>
+
+  <!-- ===================== SCREEN: INTAKE INTRO ===================== -->
+  <section class="screen" id="screen-intake-intro" data-screen hidden>
+    <div class="screen-inner">
+      <header class="brand-header brand-header--compact">
+        <div class="brand-emoji">📝</div>
+        <h1>Jullie intake</h1>
+      </header>
+      <p class="body-text">
+        Dit zijn een paar korte vragen over jou en de relatie. Je antwoorden blijven privé
+        totdat jullie <strong>allebei</strong> klaar zijn — dan worden ze voor jullie beiden
+        zichtbaar. Er is geen goed of fout antwoord.
+      </p>
+      <button class="btn btn-primary" id="btn-start-intake">Start intake</button>
+      <p class="hint" id="intake-status-hint"></p>
+    </div>
+  </section>
+
+  <!-- ===================== SCREEN: INTAKE STEPS (wizard) ===================== -->
+  <section class="screen" id="screen-intake" data-screen hidden>
+    <div class="screen-inner">
+      <div class="progress-bar"><div class="progress-fill" id="intake-progress"></div></div>
+      <form id="form-intake" class="stack intake-form">
+
+        <div class="intake-step" data-step="1">
+          <h2>Persoonlijke doelen</h2>
+          <p class="body-text">Waar zou jij zelf de komende tijd aan willen werken?</p>
+          <textarea name="personal_goals" rows="4" placeholder="Bijvoorbeeld: rustiger reageren, meer tijd voor mezelf nemen..."></textarea>
+        </div>
+
+        <div class="intake-step" data-step="2">
+          <h2>Relatiedoelen</h2>
+          <p class="body-text">Waar zou je graag samen aan willen werken?</p>
+          <textarea name="relationship_goals" rows="4" placeholder="Bijvoorbeeld: meer samen lachen, beter luisteren naar elkaar..."></textarea>
+        </div>
+
+        <div class="intake-step" data-step="3">
+          <h2>Hoe vaak?</h2>
+          <p class="body-text">Hoe vaak zou je een kleine gezamenlijke gewoonte willen inbouwen?</p>
+          <div class="radio-group" data-name="preferred_frequency">
+            <label class="radio-pill"><input type="radio" name="preferred_frequency" value="dagelijks" /> Dagelijks</label>
+            <label class="radio-pill"><input type="radio" name="preferred_frequency" value="paar_keer_week" /> Een paar keer per week</label>
+            <label class="radio-pill"><input type="radio" name="preferred_frequency" value="wekelijks" /> Wekelijks</label>
+            <label class="radio-pill"><input type="radio" name="preferred_frequency" value="flexibel" /> Flexibel / hoe het uitkomt</label>
+          </div>
+        </div>
+
+        <div class="intake-step" data-step="4">
+          <h2>Welk moment van de dag?</h2>
+          <div class="radio-group" data-name="preferred_time_of_day">
+            <label class="radio-pill"><input type="radio" name="preferred_time_of_day" value="ochtend" /> Ochtend</label>
+            <label class="radio-pill"><input type="radio" name="preferred_time_of_day" value="middag" /> Middag</label>
+            <label class="radio-pill"><input type="radio" name="preferred_time_of_day" value="avond" /> Avond</label>
+            <label class="radio-pill"><input type="radio" name="preferred_time_of_day" value="wisselend" /> Wisselend</label>
+          </div>
+        </div>
+
+        <div class="intake-step" data-step="5">
+          <h2>Energie en tijdsduur</h2>
+          <p class="body-text">Hoeveel energie/tijd heb je meestal beschikbaar voor iets samen?</p>
+          <textarea name="energy_and_duration" rows="3" placeholder="Bijvoorbeeld: meestal weinig energie na werk, liever kort en simpel..."></textarea>
+        </div>
+
+        <div class="intake-step" data-step="6">
+          <h2>Stijl</h2>
+          <p class="body-text">Hoe pak je dingen het liefst aan?</p>
+          <div class="radio-group" data-name="interaction_style">
+            <label class="radio-pill"><input type="radio" name="interaction_style" value="speels" /> Speels en licht</label>
+            <label class="radio-pill"><input type="radio" name="interaction_style" value="rustig" /> Rustig en bedachtzaam</label>
+            <label class="radio-pill"><input type="radio" name="interaction_style" value="spontaan" /> Spontaan</label>
+            <label class="radio-pill"><input type="radio" name="interaction_style" value="gepland" /> Liever gepland</label>
+          </div>
+        </div>
+
+        <div class="intake-step" data-step="7">
+          <h2>Werkvormen die je aanspreken</h2>
+          <p class="body-text">Kies wat bij je past (meerdere mogelijk).</p>
+          <div class="checkbox-group" data-name="preferred_activities">
+            <label class="radio-pill"><input type="checkbox" value="samen_koken" /> Samen koken</label>
+            <label class="radio-pill"><input type="checkbox" value="wandelen" /> Wandelen</label>
+            <label class="radio-pill"><input type="checkbox" value="gesprek" /> Dieper gesprek</label>
+            <label class="radio-pill"><input type="checkbox" value="spel" /> Spelletje</label>
+            <label class="radio-pill"><input type="checkbox" value="fysiek_dichtbij" /> Fysiek dichtbij zijn (knuffelen etc.)</label>
+            <label class="radio-pill"><input type="checkbox" value="creatief" /> Iets creatiefs samen maken</label>
+          </div>
+        </div>
+
+        <div class="intake-step" data-step="8">
+          <h2>Grenzen</h2>
+          <p class="body-text">Is er iets waar je duidelijk een grens bij hebt?</p>
+          <textarea name="boundaries" rows="4" placeholder="Optioneel, mag ook leeg blijven"></textarea>
+        </div>
+
+        <div class="intake-step" data-step="9">
+          <h2>Wat wil je vermijden?</h2>
+          <textarea name="things_to_avoid" rows="4" placeholder="Optioneel — dingen die juist niet werken voor jou"></textarea>
+        </div>
+
+        <div class="intake-nav">
+          <button type="button" class="btn btn-secondary" id="btn-intake-prev">Terug</button>
+          <button type="button" class="btn btn-primary" id="btn-intake-next">Verder</button>
+          <button type="submit" class="btn btn-primary" id="btn-intake-submit" hidden>Intake afronden</button>
+        </div>
+      </form>
+      <p class="error" id="intake-error" hidden></p>
+    </div>
+  </section>
+
+  <!-- ===================== SCREEN: WAITING FOR PARTNER INTAKE ===================== -->
+  <section class="screen" id="screen-waiting-reveal" data-screen hidden>
+    <div class="screen-inner">
+      <header class="brand-header brand-header--compact">
+        <div class="brand-emoji">🦫💭</div>
+        <h1>Bedankt!</h1>
+      </header>
+      <p class="body-text">Jouw antwoorden zijn opgeslagen. Zodra je partner ook klaar is met de intake, worden jullie antwoorden voor elkaar zichtbaar.</p>
+      <button class="btn btn-secondary" id="btn-refresh-reveal">Check opnieuw</button>
+    </div>
+  </section>
+
+  <!-- ===================== SCREEN: HOME / DASHBOARD ===================== -->
+  <section class="screen" id="screen-home" data-screen hidden>
+    <div class="screen-inner">
+      <header class="home-header">
+        <div>
+          <p class="greeting" id="home-greeting">Hoi!</p>
+          <p class="subtitle">Vandaag is een goede dag voor een kleine gewoonte 🦫</p>
+        </div>
+      </header>
+
+      <section class="card">
+        <h2>Dagelijkse check-in</h2>
+        <p class="body-text">Hoe voel je je vandaag?</p>
+        <form id="form-checkin" class="stack">
+          <div class="slider-row">
+            <label>Stemming</label>
+            <input type="range" min="1" max="5" value="3" name="mood" />
+          </div>
+          <div class="slider-row">
+            <label>Energie</label>
+            <input type="range" min="1" max="5" value="3" name="energy" />
+          </div>
+          <div class="slider-row">
+            <label>Capaciteit voor elkaar</label>
+            <input type="range" min="1" max="5" value="3" name="capacity" />
+          </div>
+          <textarea name="reflection" rows="2" placeholder="Kort, optioneel: hoe was je dag?"></textarea>
+          <button type="submit" class="btn btn-primary">Check-in opslaan</button>
+        </form>
+        <p class="hint" id="checkin-status"></p>
+      </section>
+
+      <section class="card">
+        <h2>Keuze voor morgen</h2>
+        <p class="body-text" id="tomorrow-choice-text">Nog geen voorstel voor morgen.</p>
+        <form id="form-tomorrow" class="stack">
+          <input type="text" name="activity_text" placeholder="Bijvoorbeeld: samen 15 min wandelen" />
+          <select name="duration_minutes">
+            <option value="5">5 minuten</option>
+            <option value="15" selected>15 minuten</option>
+            <option value="30">30 minuten</option>
+            <option value="60">60 minuten</option>
+          </select>
+          <button type="submit" class="btn btn-secondary">Stel voor</button>
+        </form>
+      </section>
+
+      <section class="card">
+        <h2>Beaver of the Week</h2>
+        <p class="body-text">Waardeer je partner, niet-competitief.</p>
+        <form id="form-beaver-week" class="stack">
+          <textarea name="reason" rows="2" placeholder="Waarom is je partner deze week een topbever?"></textarea>
+          <button type="submit" class="btn btn-secondary">Nomineer</button>
+        </form>
+      </section>
+
+      <nav class="bottom-nav">
+        <button class="btn btn-link" id="btn-logout">Uitloggen</button>
+      </nav>
+    </div>
+  </section>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="js/config.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
